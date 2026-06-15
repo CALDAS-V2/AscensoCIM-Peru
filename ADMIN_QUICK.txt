@@ -1,0 +1,57 @@
+╔════════════════════════════════════════════════════════════════╗
+║  👤 ADMINISTRACIÓN DE USUARIOS - GUÍA MÁS RÁPIDA              ║
+╚════════════════════════════════════════════════════════════════╝
+
+📝 EN 3 PASOS SIMPLES:
+
+PASO 1: TÚ CREAS CUENTA
+  http://localhost:5173 → "Crear Cuenta"
+  Completa datos → "Crear Cuenta"
+  ✅ Eres ADMIN automáticamente
+
+PASO 2: OTRO USUARIO CREA CUENTA
+  http://localhost:5173 → "Crear Cuenta"
+  Completa datos → "Crear Cuenta"
+  ⏳ Status: PENDING (No puede login)
+
+PASO 3: TÚ APRUEBAS AL USUARIO
+  Login como admin → "Admin Panel"
+  Ve usuarios pendientes → "APROBAR"
+  ✅ Usuario ahora puede hacer login
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+🔴 ANTES (Status: PENDING)
+└─ ❌ No puede hacer login
+└─ ⏳ Espera aprobación
+└─ Admin ve: "1 usuario pendiente"
+
+🟢 DESPUÉS (Status: APPROVED)
+└─ ✅ Puede hacer login
+└─ ✅ Acceso completo
+└─ Admin lo ve en "Usuarios activos"
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+📧 EMAILS AUTOMÁTICOS:
+  • Usuario se registra → Admin recibe notificación
+  • Admin aprueba → Usuario recibe confirmación
+  • Admin rechaza → Usuario recibe notificación
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+¿DÓNDE ESTÁ EL PANEL?
+En el dashboard, busca:
+  • Botón "Admin"
+  • Link "Gestión de Usuarios"
+  • "Admin Panel"
+  • Menú lateral: "Admin"
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+✅ ¡LISTO! Ya sabes cómo agregar usuarios 🎉
+
+Para más detalles:
+→ ADMIN_TUTORIAL.txt (paso a paso completo)
+→ ADMIN_GUIA.md (información detallada)
+→ ADMIN_RESUMEN.txt (referencia rápida)

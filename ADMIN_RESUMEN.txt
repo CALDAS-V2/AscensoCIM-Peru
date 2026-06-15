@@ -1,0 +1,171 @@
+╔════════════════════════════════════════════════════════════════╗
+║   👤 RESUMEN RÁPIDO: CÓMO DAR ACCESO A OTRO USUARIO          ║
+╚════════════════════════════════════════════════════════════════╝
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+PASO 1: TÚ CREAS TU CUENTA (Como Admin)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+URL: http://localhost:5173
+Botón: "Crear Cuenta"
+
+Completa:
+┌─ Email: tu-email@gmail.com
+├─ Contraseña: Mín 8 caracteres
+├─ Nombres: Tu nombre
+├─ Apellido Paterno: Tu apellido 1
+├─ Apellido Materno: Tu apellido 2
+└─ CIP: Tu número CIP
+
+Resultado: ✅ Tu cuenta APPROVED (eres admin automáticamente)
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+PASO 2: OTRO USUARIO SE REGISTRA
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+La otra persona:
+  1. Abre: http://localhost:5173
+  2. Botón: "Crear Cuenta"
+  3. Completa su información
+  4. Botón: "Crear Cuenta"
+
+Resultado: ⏳ Su cuenta PENDING (espera tu aprobación)
+           ❌ NO PUEDE hacer login aún
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+PASO 3: TÚ APRUEBAS AL USUARIO (Como Admin)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Ahora TÚ haces esto:
+
+1. Login en: http://localhost:5173
+   ├─ Email: tu-email@gmail.com
+   └─ Contraseña: Tu contraseña
+
+2. En el dashboard, busca: "Admin" o "Gestión de Usuarios"
+   (Puede estar en el menú lateral o en el dashboard)
+
+3. Haz clic para ver USUARIOS PENDIENTES
+   Verás a la otra persona con estado: PENDING
+
+4. Haz clic en: ✅ APROBAR
+   Su estado cambia a: APPROVED
+
+5. Ella recibe un email diciendo:
+   "Tu cuenta fue aprobada correctamente"
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+PASO 4: OTRO USUARIO AHORA PUEDE HACER LOGIN
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+La otra persona:
+
+1. Abre: http://localhost:5173
+2. Botón: "Login" (no Crear Cuenta)
+3. Email: Su email de registro
+4. Contraseña: Su contraseña
+5. Haz clic: "Iniciar Sesión"
+
+Resultado: ✅ ACCESO CONCEDIDO
+           ✅ Puede ver el dashboard
+           ✅ Puede usar todas las funciones
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+DIAGRAMA DEL FLUJO
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+TÚ (Admin)                    OTRO USUARIO
+    │                              │
+    ├─ Creas tu cuenta     ├─ Intenta crear cuenta
+    │  Status: APPROVED    │  Status: PENDING ❌
+    │  ✅ Login OK         │  ❌ No puede login
+    │                      │
+    ├─ Ves panel Admin     │
+    │  "1 usuario pending" │
+    │                      │
+    ├─ Haces clic Aprobar──────► Email: "Aprobado ✅"
+    │                      │
+    ├─ Status: APPROVED    │  Status: APPROVED ✅
+    │                      │
+    │                      ├─ Intenta login
+    │                      │  ✅ Login OK
+    │                      │  ✅ Dashboard visible
+    │                      │
+    └─────────────────────┴─ Ambos en el sistema
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ESTADOS POSIBLES
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+⏳ PENDING (Pendiente):
+   • Usuario se registró
+   • Espera aprobación del admin
+   • ❌ NO PUEDE login
+   • Admin puede: APROBAR o RECHAZAR
+
+✅ APPROVED (Aprobado):
+   • ✅ PUEDE hacer login
+   • ✅ Acceso completo al sistema
+   • Admin puede: SUSPENDER
+
+🔒 SUSPENDED (Suspendido):
+   • ❌ NO PUEDE hacer login
+   • ❌ Acceso bloqueado
+   • Admin puede: REACTIVAR
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+¿DÓNDE ESTÁ EL PANEL DE ADMIN?
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Después de hacer login como admin:
+
+En el sidebar/menú izquierdo busca:
+  • "Admin" o
+  • "Gestión de Usuarios" o
+  • "Admin Panel"
+
+O en el dashboard principal busca un botón azul que diga:
+  • "Usuarios Pendientes"
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+INFORMACIÓN IMPORTANTE
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+📧 Emails se envían a:
+   ADMIN_EMAIL_AQUI
+
+   Notificaciones automáticas:
+   ✉️ Cuando un usuario se registra → Email al admin
+   ✉️ Cuando admin aprueba → Email al usuario
+   ✉️ Cuando admin rechaza → Email al usuario
+
+🔐 Seguridad:
+   ✅ Solo el primer usuario es admin
+   ✅ Otros usuarios NO pueden acceder a admin
+   ✅ Las contraseñas están protegidas
+   ✅ Todas las acciones se registran
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ERRORES COMUNES
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+❌ "No veo el panel de admin"
+✓ Verifica que estés logueado como el PRIMER usuario
+✓ Ese primer usuario es automáticamente admin
+✓ Si creaste una segunda cuenta, esa NO es admin
+
+❌ "El usuario sigue en PENDING"
+✓ Presiona F5 para refrescar
+✓ Haz clic en el botón APROBAR exactamente
+✓ Espera a que se procese (puede tomar 1-2 segundos)
+
+❌ "El usuario no recibe email"
+✓ Revisa en ADMIN_EMAIL_AQUI
+✓ Verifica bandeja de entrada y SPAM
+✓ Asegúrate que el backend está corriendo
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Para más información: ADMIN_GUIA.md
+
+¡Listo! Ya sabes cómo gestionar usuarios 🎉

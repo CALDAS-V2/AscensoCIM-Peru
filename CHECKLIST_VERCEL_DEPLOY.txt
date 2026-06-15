@@ -1,0 +1,180 @@
+✅ CHECKLIST PRE-DEPLOY A VERCEL
+
+═══════════════════════════════════════════════════════════════════════════════
+
+📦 COMPILACIÓN Y CÓDIGO
+
+[✅] npm run build → Exitoso (sin errores críticos)
+[✅] npm run lint:types → Archivos de Supabase sin errores
+[✅] src/lib/supabase.ts → Creado y configurado
+[✅] src/lib/useAuth.ts → Hook de autenticación funcionando
+[✅] src/pages/RegisterPage.tsx → Usa supabase.auth.signUp()
+[✅] src/pages/LoginPage.tsx → Usa supabase.auth.signInWithPassword()
+[✅] src/App.tsx → Protección de rutas con useAuth()
+
+═══════════════════════════════════════════════════════════════════════════════
+
+🔐 VARIABLES DE ENTORNO
+
+[✅] .env.local contiene:
+   [✅] VITE_SUPABASE_URL
+   [✅] VITE_SUPABASE_ANON_KEY
+   [✅] VITE_BLINK_PROJECT_ID
+   [✅] VITE_BLINK_PUBLISHABLE_KEY
+   [✅] VITE_GOOGLE_AI_API_KEY
+   [✅] VITE_RECAPTCHA_SITE_KEY
+   [✅] VITE_API_URL (opcional en desarrollo)
+
+═══════════════════════════════════════════════════════════════════════════════
+
+⚙️ CONFIGURACIÓN DE VERCEL
+
+[  ] vercel.json existe y tiene:
+   [  ] "framework": "vite"
+   [  ] "buildCommand": "npm run build"
+   [  ] "outputDirectory": "dist"
+   [  ] "rewrites" configurado para SPA
+
+═══════════════════════════════════════════════════════════════════════════════
+
+🔗 GITHUB
+
+[  ] Repositorio creado en GitHub
+[  ] Código pusheado a main branch
+[  ] .gitignore incluye:
+   [  ] node_modules/
+   [  ] .env.local
+   [  ] .env
+   [  ] dist/
+
+═══════════════════════════════════════════════════════════════════════════════
+
+🚀 VERCEL DASHBOARD
+
+ANTES DE HACER DEPLOY:
+
+[  ] Account en Vercel creado
+[  ] GitHub conectado a Vercel
+[  ] Proyecto creado en Vercel
+[  ] Environment Variables agregadas:
+   [  ] VITE_SUPABASE_URL
+   [  ] VITE_SUPABASE_ANON_KEY
+   [  ] VITE_BLINK_PROJECT_ID
+   [  ] VITE_BLINK_PUBLISHABLE_KEY
+   [  ] VITE_GOOGLE_AI_API_KEY
+   [  ] VITE_RECAPTCHA_SITE_KEY
+   [  ] (Otros VITE_* según necesites)
+
+═══════════════════════════════════════════════════════════════════════════════
+
+📧 SUPABASE DASHBOARD
+
+DESPUÉS DE DEPLOYMENT EN VERCEL:
+
+[  ] Ve a: https://app.supabase.com
+[  ] Selecciona proyecto: "Ascenso-CIM-peru"
+[  ] Authentication > URL Configuration
+[  ] En "Redirect URLs" agrega:
+   [  ] https://tu-proyecto.vercel.app
+   (Vercel proporciona este dominio después del deploy)
+[  ] Click "Save"
+
+═══════════════════════════════════════════════════════════════════════════════
+
+🧪 TESTING PRE-DEPLOY
+
+En desarrollo local (npm run dev):
+
+[  ] Registro funciona
+[  ] Login funciona
+[  ] Logout funciona
+[  ] Password recovery funciona
+[  ] Protección de rutas funciona
+[  ] Sesión persiste al recargar
+[  ] No hay errores en Console (F12)
+[  ] No hay errores de red
+
+═══════════════════════════════════════════════════════════════════════════════
+
+✅ LISTO PARA DEPLOYMENT
+
+Cuando completes todos los checks arriba:
+
+1. Haz el primer push a GitHub
+2. Ve a Vercel y conecta tu proyecto
+3. Agrega Environment Variables
+4. Click "Deploy"
+5. Espera 2-5 minutos
+6. Verás: "✅ Live"
+7. Copia el dominio de Vercel (ej: https://ascensocim-peru.vercel.app)
+8. Ve a Supabase y agrega ese dominio en URL Configuration
+9. ¡LISTO!
+
+═══════════════════════════════════════════════════════════════════════════════
+
+🚨 CHECKLIST DE SEGURIDAD
+
+[✅] VITE_SUPABASE_ANON_KEY es pública (CORRECTO - está en el cliente)
+[✅] No hay JWT_SECRET en variables públicas
+[✅] .env.local NO está en .gitignore... espera, SÍ debe estar
+
+IMPORTANTE:
+[  ] Verifica que .gitignore contenga ".env.local"
+[  ] Si lo pusheaste a GitHub por error:
+     1. git rm --cached .env.local
+     2. Agregar .env.local a .gitignore
+     3. git commit -m "Remove .env.local"
+     4. git push
+
+═══════════════════════════════════════════════════════════════════════════════
+
+📱 TESTING POST-DEPLOYMENT
+
+Después de que Vercel diga "✅ Live":
+
+[  ] Accede a tu URL de Vercel
+[  ] Página carga sin errores
+[  ] Logo y CSS cargan correctamente
+[  ] Puedo ver el formulario de login
+[  ] Click en "Registrar" funciona
+[  ] Registro es exitoso
+[  ] Recibo email de confirmación (revisa spam)
+[  ] Email confirmation link funciona
+[  ] Puedo iniciar sesión
+[  ] Dashboard carga
+[  ] Sesión persiste al recargar
+[  ] Logout funciona
+[  ] Redirección a login funciona
+
+═══════════════════════════════════════════════════════════════════════════════
+
+🎉 SUCCESS CRITERIA
+
+Tu deployment es EXITOSO cuando:
+✓ App está en vivo en Vercel
+✓ Registro y login funcionan
+✓ Email de confirmación funciona
+✓ Sesión persiste
+✓ No hay errores en Console
+✓ Puedes compartir el link con usuarios
+
+═══════════════════════════════════════════════════════════════════════════════
+
+📞 TROUBLESHOOTING RÁPIDO
+
+PROBLEMA                        SOLUCIÓN
+────────────────────────────────────────────────────────────────────────────
+Build failed                    → npm run build localmente y arregla errores
+Variables undefined             → Verifica Variables en Vercel Dashboard
+"Failed to fetch"               → Verifica que VITE_SUPABASE_* sean correctas
+Email no llega                  → Agrega URL de Vercel en Supabase
+Sesión se pierde                → Normal, useAuth() hook lo maneja
+CORS error                      → Supabase lo maneja automáticamente
+
+═══════════════════════════════════════════════════════════════════════════════
+
+¡LISTO PARA PRODUCTION! 🚀
+
+Marca todos los checks y procede con el deployment.
+
+═══════════════════════════════════════════════════════════════════════════════

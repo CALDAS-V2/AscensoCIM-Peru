@@ -1,0 +1,83 @@
+╔══════════════════════════════════════════════════════════════╗
+║  🔧 PROBLEMA: PANTALLA BLANCA EN localhost:5173             ║
+║  ✅ SOLUCIONADO                                              ║
+╚══════════════════════════════════════════════════════════════╝
+
+CAUSA DEL PROBLEMA:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+El archivo App.tsx tenía un error en la lógica del router de 
+TanStack que hacía que la página renderizara en blanco.
+
+SOLUCIONES APLICADAS:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+1. ✅ Simplificado App.tsx
+   - Corregida lógica del rootRoute
+   - Agregada detección de /reset-password directamente
+   - Removidos hooks innecesarios
+
+2. ✅ Corregido ResetPasswordPage.tsx
+   - Actualizado para usar window.location.search
+   - Mejor manejo de parámetros de query
+
+3. ✅ Mejorados scripts de ejecución
+   - start-all.bat con mejor manejo de errores
+   - Agregado DIAGNOSTICO.bat para verificar instalación
+
+ARCHIVOS MODIFICADOS:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+📝 src/App.tsx - Lógica del router simplificada
+📝 src/pages/ResetPasswordPage.tsx - Manejo de params mejorado
+📝 start-all.bat - Script mejorado
+📝 DIAGNOSTICO.bat - Nuevo script de diagnóstico
+
+CÓMO EJECUTAR AHORA:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+OPCIÓN 1: Si todo está instalado (Recomendado)
+┌─ Doble-clic en: start-all.bat
+
+OPCIÓN 2: Si tienes dudas sobre instalación
+┌─ Doble-clic en: DIAGNOSTICO.bat
+   (Verifica everything y luego ejecuta start-all.bat)
+
+OPCIÓN 3: Manual con comando
+┌─ Abre PowerShell / CMD
+┌─ cd "d:\Nueva carpeta"
+┌─ npm run dev:all
+
+SI AÚN VES PANTALLA BLANCA:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+1. Abre la Consola del Navegador (F12)
+   → Pestaña: Console
+   → Busca errores en rojo
+
+2. Verifica que aparecen estos mensajes:
+   ✅ "🚀 Servidor ejecutándose en http://localhost:3001"
+   ✅ En la terminal, sin errores rojos
+
+3. Si ves errores, copia el error completo y análizalo
+
+4. Intenta limpiar cache:
+   → Presiona Ctrl+Shift+Delete en el navegador
+   → Vacía cookies y cache
+   → Recarga F5
+
+VERIFICACIONES RÁPIDAS:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+✓ ¿Backend está corriendo?
+  → Abre: http://localhost:3001/health
+  → Deberías ver: {"status":"ok"}
+
+✓ ¿Frontend está corriendo?
+  → Abre: http://localhost:5173
+  → Deberías ver la página de login
+
+✓ ¿Conexión entre frontend y backend?
+  → Intenta "Olvidé mi contraseña"
+  → Deberías ver un mensaje de éxito (o error pero sin "Failed to fetch")
+
+TODO DEBERÍA FUNCIONAR AHORA ✅
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━

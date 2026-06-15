@@ -1,0 +1,133 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// Note: For production, set DATABASE_URL in .env to your Postgres connection string (Railway). You may also set a SHADOW_DATABASE_URL for migrations.
+
+model User {
+  id                  String               @id @default(cuid())
+  email               String               @unique
+  passwordHash        String
+  name                String?
+  apellidoPaterno     String?
+  apellidoMaterno     String?
+  cip                 String?
+  status              String               @default("pending")
+  roleId              String
+  lastLogin           DateTime?
+  loginAttempts       Int                  @default(0)
+  lockedUntil         DateTime?
+  createdAt           DateTime             @default(now())
+  updatedAt           DateTime             @updatedAt
+  activityLogs        ActivityLog[]
+  blockedModules      BlockedModule[]
+  passwordResetTokens PasswordResetToken[]
+  permissions         Permission[]
+  sessions            Session[]
+  role                Role                 @relation(fields: [roleId], references: [id])
+}
+
+model Role {
+  id          String   @id @default(cuid())
+  name        String   @unique
+  description String?
+  createdAt   DateTime @default(now())
+  users       User[]
+}
+
+model Module {
+  id             String          @id @default(cuid())
+  name           String          @unique
+  slug           String          @unique
+  description    String?
+  createdAt      DateTime        @default(now())
+  blockedModules BlockedModule[]
+  permissions    Permission[]
+}
+
+model Permission {
+  id        String   @id @default(cuid())
+  userId    String
+  moduleId  String
+  canAccess Boolean  @default(true)
+  createdAt DateTime @default(now())
+  module    Module   @relation(fields: [moduleId], references: [id], onDelete: Cascade)
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, moduleId])
+}
+
+model BlockedModule {
+  id        String   @id @default(cuid())
+  userId    String
+  moduleId  String
+  reason    String?
+  blockedAt DateTime @default(now())
+  module    Module   @relation(fields: [moduleId], references: [id], onDelete: Cascade)
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, moduleId])
+}
+
+model ActivityLog {
+  id        String   @id @default(cuid())
+  userId    String
+  action    String
+  details   String?
+  ipAddress String?
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Session {
+  id        String   @id @default(cuid())
+  userId    String
+  token     String   @unique
+  expiresAt DateTime
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model BruteForceAttempt {
+  id          String   @id @default(cuid())
+  email       String
+  ipAddress   String?
+  attemptedAt DateTime @default(now())
+}
+
+model PasswordResetToken {
+  id        String   @id @default(cuid())
+  userId    String
+  token     String   @unique
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([token])
+}
+
+model Exam {
+  id    Int    @id @default(autoincrement())
+  title String
+  score Int
+}
+
+model Question {
+  id       Int    @id @default(autoincrement())
+  question String
+  answer   String
+  category String
+}
+
+model Infraction {
+  id          Int    @id @default(autoincrement())
+  code        String
+  description String
+}

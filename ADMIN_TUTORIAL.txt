@@ -1,0 +1,223 @@
+╔════════════════════════════════════════════════════════════════╗
+║  📋 TUTORIAL PASO A PASO: GESTIÓN DE USUARIOS                ║
+╚════════════════════════════════════════════════════════════════╝
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+FASE 1: INICIALIZACIÓN (Solo la primera vez)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+┌─ PASO 1: Abre http://localhost:5173
+│  Verás la página de Login
+│
+├─ PASO 2: Busca el botón "Crear Cuenta"
+│  (Puede decir "No tengo cuenta" o "Registrarse")
+│
+└─ PASO 3: Llena el formulario
+   
+   Email: ___________________
+   (tu correo personal)
+   
+   Contraseña: ___________________
+   (Mínimo 8 caracteres)
+   
+   Confirmar Contraseña: ___________________
+   
+   Nombres: ___________________
+   
+   Apellido Paterno: ___________________
+   
+   Apellido Materno: ___________________
+   
+   CIP: ___________________
+
+┌─ PASO 4: Haz clic en "Crear Cuenta"
+│
+└─ RESULTADO: ✅ Cuenta creada
+              ✅ Tu rol: ADMINISTRADOR
+              ✅ Status: APPROVED
+              ✅ Puedes hacer login
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+FASE 2: AGREGAR OTRO USUARIO (La otra persona)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+La otra persona hace EXACTAMENTE lo mismo que tú:
+
+┌─ PASO 1: La otra persona abre http://localhost:5173
+│
+├─ PASO 2: Haz clic en "Crear Cuenta"
+│
+├─ PASO 3: Llena sus datos
+│  Email: juan@example.com
+│  Contraseña: Juan123456
+│  Nombres: Juan
+│  Apellido Paterno: Pérez
+│  Apellido Materno: García
+│  CIP: 87654321
+│
+├─ PASO 4: Haz clic en "Crear Cuenta"
+│
+└─ RESULTADO: ⏳ Cuenta creada
+              ⏳ Status: PENDING (Espera aprobación)
+              ❌ NO puede hacer login aún
+              ✉️ Email notificación enviado
+
+IMPORTANTE: En este punto, Juan NO puede hacer login.
+Debes tú (como admin) aprobarlo primero.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+FASE 3: TÚ APRUEBAS AL USUARIO (Como Administrador)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+┌─ PASO 1: Haz login con tu cuenta
+│  Email: tu-email@gmail.com
+│  Contraseña: Tu contraseña
+│  Botón: "Iniciar Sesión"
+│
+├─ RESULTADO: ✅ Logueado como Admin
+│             ✅ Ves el Dashboard
+│
+├─ PASO 2: Busca el botón de ADMINISTRACIÓN
+│  Puede estar en:
+│  • Menú lateral izquierdo
+│  • Panel superior
+│  • Menú de usuario
+│  Busca: "Admin", "Gestión", "Usuarios Pendientes"
+│
+├─ PASO 3: Haz clic en Administración
+│
+└─ RESULTADO: ✅ Ves lista de usuarios pendientes
+
+┌─ PASO 4: Busca al usuario que quieres aprobar
+│  Verás:
+│  • Email: juan@example.com
+│  • Nombre: Juan Pérez García
+│  • CIP: 87654321
+│  • Status: PENDING ⏳
+│
+├─ PASO 5: Busca el botón APROBAR (o similar)
+│  Puede ser:
+│  • ✅ APROBAR
+│  • 👤 Aprobar usuario
+│  • ✓ Permitir acceso
+│
+├─ PASO 6: Haz clic en APROBAR
+│
+└─ RESULTADO: ✅ Usuario aprobado
+              ✅ Status cambia a: APPROVED
+              ✅ Email enviado a juan@example.com
+              ✅ Juan puede ahora hacer login
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+FASE 4: EL USUARIO AHORA PUEDE HACER LOGIN
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Juan ahora intenta hacer login:
+
+┌─ PASO 1: Abre http://localhost:5173
+│
+├─ PASO 2: Busca "Iniciar Sesión" (Login)
+│
+├─ PASO 3: Ingresa datos
+│  Email: juan@example.com
+│  Contraseña: Juan123456
+│
+├─ PASO 4: Haz clic en "Iniciar Sesión"
+│
+└─ RESULTADO: ✅ LOGIN EXITOSO
+              ✅ Ves el Dashboard
+              ✅ Acceso completo al sistema
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+OPERACIONES ADICIONALES (Como Admin)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+RECHAZAR un usuario pendiente:
+┌─ En el panel de admin
+├─ Busca al usuario con status PENDING
+├─ Haz clic en: ❌ RECHAZAR o ELIMINAR
+├─ Usuario eliminado del sistema
+└─ Email enviado: "Tu solicitud fue rechazada"
+
+SUSPENDER un usuario aprobado:
+┌─ En el panel de admin
+├─ Busca al usuario
+├─ Haz clic en: 🔒 SUSPENDER
+├─ Usuario no puede hacer login
+└─ Cuyo status: SUSPENDED
+
+REACTIVAR un usuario suspendido:
+┌─ En el panel de admin
+├─ Busca al usuario suspendido
+├─ Haz clic en: 🔓 REACTIVAR
+├─ Usuario puede hacer login de nuevo
+└─ Status: APPROVED
+
+VER LOGS DE ACTIVIDAD:
+┌─ En el panel de admin
+├─ Busca "Logs" o "Historial de Actividad"
+├─ Ves todas las acciones de usuarios
+├─ Quién hizo qué y cuándo
+└─ Útil para auditoría y seguridad
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+TABLA DE REFERENCIA
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+ESTADO          ¿Puede login?  Acción Admin         Siguiente
+─────────────────────────────────────────────────────────────
+PENDING         ❌ No         Aprobar/Rechazar    → APPROVED/Deleted
+APPROVED        ✅ Sí         Ver en admin        → SUSPENDED
+SUSPENDED       ❌ No         Ver en admin        → APPROVED
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+EMAILS AUTOMÁTICOS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+El sistema envía automáticamente:
+
+📧 Usuario se registra
+   De: Sistema
+   Para: Admin (ADMIN_EMAIL_AQUI)
+   Asunto: "Nuevo usuario pendiente de aprobación"
+   Contenido: Datos del usuario
+
+📧 Admin aprueba usuario
+   De: Sistema
+   Para: Usuario (su email)
+   Asunto: "Tu cuenta fue aprobada"
+   Contenido: "Ya puedes hacer login"
+
+📧 Admin rechaza usuario
+   De: Sistema
+   Para: Usuario (su email)
+   Asunto: "Tu solicitud fue rechazada"
+   Contenido: "Tu cuenta no fue aprobada"
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+TROUBLESHOOTING
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+❌ "No veo el botón Crear Cuenta"
+✓ Busca "Registrarse" o "Sign Up"
+✓ Busca un enlace que diga "No tengo cuenta"
+
+❌ "No veo el panel de administración"
+✓ Verifica estar logueado como el PRIMER usuario
+✓ Busca en el menú/sidebar
+✓ Busca botón "Admin" en la barra superior
+
+❌ "Juan no puede hacer login"
+✓ Verifica que su status sea APPROVED (no PENDING)
+✓ Verifica el email y contraseña estén correctos
+✓ Intenta en otra ventana/navegador (puede ser cache)
+
+❌ "No recibo el email"
+✓ Revisa en ADMIN_EMAIL_AQUI
+✓ Busca en bandeja SPAM
+✓ Verifica que el backend está ejecutándose
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+¡Ya sabes cómo gestionar usuarios! 🎉
+Para más detalles: ADMIN_GUIA.md
