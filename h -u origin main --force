@@ -1,0 +1,27 @@
+[35mAPI_ENDPOINTS.md[m[36m:[m[32m164[m[36m:[mAuthorization: [1;31mBearer [m{token}
+[35mAPI_ENDPOINTS.md[m[36m:[m[32m181[m[36m:[mAuthorization: [1;31mBearer [m{token}
+[35mAPI_ENDPOINTS.md[m[36m:[m[32m206[m[36m:[mAuthorization: [1;31mBearer [m{token}
+[35mAPI_ENDPOINTS.md[m[36m:[m[32m377[m[36m:[mAuthorization: [1;31mBearer [m{token}
+[35mIMPLEMENTATION.md[m[36m:[m[32m156[m[36m:[mHeader: Authorization: [1;31mBearer [mJWT_TOKEN_EJEMPLO
+[35mIMPLEMENTATION.md[m[36m:[m[32m179[m[36m:[m   │             │──Header: Authorization: [1;31mBearer [mJWT
+[35mINSTALL.md[m[36m:[m[32m165[m[36m:[mAuthorization: [1;31mBearer [mJWT_TOKEN_EJEMPLO
+[35mSECURITY.md[m[36m:[m[32m119[m[36m:[m  "Authorization": "[1;31mBearer [mJWT_TOKEN_EJEMPLO"
+[35mTESTING_WHATSAPP_EMAIL.md[m[36m:[m[32m7[m[36m:[mHeaders: Authorization: [1;31mBearer [m<TOKEN_ADMIN>
+[35mTESTING_WHATSAPP_EMAIL.md[m[36m:[m[32m13[m[36m:[m  -H "Authorization: [1;31mBearer [m<TOKEN_ADMIN>" \
+[35mTESTING_WHATSAPP_EMAIL.md[m[36m:[m[32m43[m[36m:[mHeaders: Authorization: [1;31mBearer [m<TOKEN_ADMIN>
+[35mTESTING_WHATSAPP_EMAIL.md[m[36m:[m[32m49[m[36m:[m  -H "Authorization: [1;31mBearer [m<TOKEN_ADMIN>" \
+[35msrc/lib/authRoutesV2.ts[m[36m:[m[32m204[m[36m:[m                'Authorization': `[1;31mBearer [m${SUPABASE_SERVICE_ROLE_KEY}`
+[35msrc/lib/authRoutesV2.ts[m[36m:[m[32m637[m[36m:[m              'Authorization': `[1;31mBearer [m${SUPABASE_SERVICE_ROLE_KEY}`
+[35msrc/lib/guards.tsx[m[36m:[m[32m142[m[36m:[m            'Authorization': `[1;31mBearer [m${token}`,
+[35msrc/lib/hooks/useAuth.ts[m[36m:[m[32m41[m[36m:[m            'Authorization': `[1;31mBearer [m${token}`,
+[35msrc/lib/initializeApp.ts[m[36m:[m[32m104[m[36m:[m            'Authorization': `[1;31mBearer [m${token}`,
+[35msrc/lib/initializeApp.ts[m[36m:[m[32m131[m[36m:[m            'Authorization': `[1;31mBearer [m${token}`,
+[35msrc/pages/AdminPanelPage.tsx[m[36m:[m[32m56[m[36m:[m          'Authorization': `[1;31mBearer [m${token}`,
+[35msrc/pages/AdminPanelPage.tsx[m[36m:[m[32m79[m[36m:[m          'Authorization': `[1;31mBearer [m${token}`,
+[35msrc/pages/AdminPanelPage.tsx[m[36m:[m[32m101[m[36m:[m          'Authorization': `[1;31mBearer [m${token}`,
+[35msrc/pages/AdminPanelPage.tsx[m[36m:[m[32m128[m[36m:[m          'Authorization': `[1;31mBearer [m${token}`,
+[35msrc/pages/AdminUsersPage.tsx[m[36m:[m[32m36[m[36m:[m        headers: token ? { Authorization: `[1;31mBearer [m${token}` } : {}
+[35msrc/pages/AdminUsersPage.tsx[m[36m:[m[32m60[m[36m:[m          ...(token ? { Authorization: `[1;31mBearer [m${token}` } : {})
+[35msrc/pages/AdminUsersPage.tsx[m[36m:[m[32m80[m[36m:[m          ...(token ? { Authorization: `[1;31mBearer [m${token}` } : {})
+[35mtest-api.sh[m[36m:[m[32m59[m[36m:[m  -H "Authorization: [1;31mBearer [m$TOKEN" \
+[35mtest-api.sh[m[36m:[m[32m66[m[36m:[m  -H "Authorization: [1;31mBearer [minvalid_token" \
