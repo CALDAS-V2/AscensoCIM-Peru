@@ -11,3 +11,5 @@ dist/
 Thumbs.db
 *.log
 build.log
+_*.cjs
+backup_*.json
