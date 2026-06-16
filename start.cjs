@@ -1,4 +1,3 @@
-#!/usr/bin/env node
 const { execSync } = require('child_process')
 const path = require('path')
 
@@ -18,5 +17,10 @@ try {
   console.error('[start] Seed failed:', e.message)
 }
 
-console.log('[start] Starting server...')
-require('./dist/server.js')
+console.log('[start] Starting server with tsx...')
+try {
+  execSync('npx tsx src/server.ts', { stdio: 'inherit', cwd: __dirname })
+} catch (e) {
+  console.error('[start] Server exited:', e.message)
+  process.exit(1)
+}
