@@ -44,27 +44,43 @@ export function RegisterPage({ onBackToLogin }: RegisterPageProps) {
     setIsLoading(true)
 
     try {
-      // Enviar solicitud de acceso al backend (registro convertido en solicitud)
-      const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:3001'
-      const response = await fetch(`${apiUrl}/api/auth/register`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          email,
-          password,
-          nombres,
-          apellidoPaterno,
-          apellidoMaterno,
-          cip
-        })
+      // 1. Crear usuario en Supabase Auth
+      const { data, error } = await supabase.auth.signUp({
+        email: email.trim(),
+        password,
+        options: {
+          data: {
+            nombres,
+            apellidoPaterno,
+            apellidoMaterno,
+            cip
+          }
+        }
       })
 
-      const data = await response.json()
+      if (error) throw error
 
-      if (!response.ok) {
-        toast.error(data.error || 'Error al enviar la solicitud')
-        return
-      }
+      // 2. Obtener el rol 'usuario'
+      const { data: role } = await supabase
+        .from('Role')
+        .select('id')
+        .eq('name', 'usuario')
+        .single()
+
+      // 3. Crear registro en public.User con estado pendiente
+      const now = new Date().toISOString()
+      await supabase.from('User').insert({
+        id: data.user!.id,
+        email: email.trim(),
+        passwordHash: 'MIGRATED_TO_SUPABASE_AUTH',
+        name: nombres,
+        apellidoPaterno,
+        apellidoMaterno,
+        cip,
+        status: 'pending',
+        roleId: role?.id || '',
+        updatedAt: now
+      })
 
       toast.success('Solicitud enviada. Tu cuenta quedará pendiente de aprobación por un administrador.')
 
@@ -81,8 +97,8 @@ export function RegisterPage({ onBackToLogin }: RegisterPageProps) {
       setTimeout(() => {
         onBackToLogin()
       }, 2000)
-    } catch (error) {
-      toast.error('Error en la conexión')
+    } catch (error: any) {
+      toast.error(error?.message || 'Error en la conexión')
       console.error(error)
     } finally {
       setIsLoading(false)

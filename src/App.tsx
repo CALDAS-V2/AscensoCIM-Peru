@@ -1,4 +1,4 @@
-import { createRouter, createRoute, createRootRoute, RouterProvider, Outlet } from '@tanstack/react-router'
+import { createRouter, createRoute, createRootRoute, RouterProvider, Outlet, useLocation } from '@tanstack/react-router'
 import { DashboardLayout } from './layouts/DashboardLayout'
 import { HomePage } from './pages/HomePage'
 import { ExamPage } from './pages/ExamPage'
@@ -16,17 +16,13 @@ import { ResetPasswordPage } from './pages/ResetPasswordPage'
 import { ForgotPasswordPage } from './pages/ForgotPasswordPage'
 import { PapeletasAtuPage } from './pages/PapeletasAtuPage'
 import { useAuth } from './lib/useAuth'
-import { useState, useEffect } from 'react'
 
 // Root route principal
 const rootRoute = createRootRoute({
   component: () => {
     const { user, loading } = useAuth()
-    const [isResetting, setIsResetting] = useState(false)
-
-    useEffect(() => {
-      setIsResetting(window.location.pathname === '/reset-password')
-    }, [])
+    const location = useLocation()
+    const bypassAuth = location.pathname === '/reset-password' || location.pathname === '/forgot-password'
 
     // Si está cargando, mostrar pantalla de carga
     if (loading) {
@@ -40,8 +36,8 @@ const rootRoute = createRootRoute({
       )
     }
 
-    // Si es reset-password, mostrar solo el outlet
-    if (isResetting) {
+    // Permitir reset-password y forgot-password sin autenticación
+    if (bypassAuth) {
       return <Outlet />
     }
 

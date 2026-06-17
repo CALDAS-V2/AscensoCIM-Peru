@@ -12,6 +12,7 @@ import {
   toast
 } from '@blinkdotnew/ui'
 import { RegisterPage } from './RegisterPage'
+import { supabase } from '../lib/supabase'
 
 export function LoginPageV2() {
   const [email, setEmail] = useState('')
@@ -21,8 +22,6 @@ export function LoginPageV2() {
   const [isSubmitting, setIsSubmitting] = useState(false)
 
   const handleSubmit = async () => {
-    console.log('handleSubmit called', { email, password })
-
     if (!email || !password) {
       alert('Por favor completa todos los campos')
       return
@@ -30,32 +29,38 @@ export function LoginPageV2() {
 
     try {
       setIsSubmitting(true)
-      const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:3001'
-      const resp = await fetch(`${apiUrl}/api/auth/login`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email: email.trim(), password })
+
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email: email.trim(),
+        password
       })
 
-      const result = await resp.json()
+      if (error) throw error
 
-      if (!resp.ok) {
-        const msg = result.error || result.message || 'Error al iniciar sesión'
-        alert(msg)
+      // Verificar el estado del usuario en la base de datos
+      const { data: profile } = await supabase
+        .from('User')
+        .select('status')
+        .eq('id', data.user.id)
+        .maybeSingle()
+
+      if (profile?.status === 'pending') {
+        await supabase.auth.signOut()
+        alert('Tu cuenta está pendiente de aprobación por un administrador.')
         return
       }
 
-      if (result.token) {
-        try { localStorage.setItem('token', result.token) } catch (e) { console.warn('localStorage error', e) }
-      }
-      if (result.user) {
-        try { localStorage.setItem('user', JSON.stringify(result.user)) } catch (e) { console.warn('localStorage error', e) }
+      if (profile?.status === 'suspended') {
+        await supabase.auth.signOut()
+        alert('Tu cuenta ha sido suspendida. Contacta al administrador.')
+        return
       }
 
+      // Login exitoso
       window.location.href = '/'
-    } catch (err) {
+    } catch (err: any) {
       console.error('Login error:', err)
-      alert('Error al conectar al servidor')
+      alert(err?.message || 'Error al conectar al servidor')
     } finally {
       setIsSubmitting(false)
     }

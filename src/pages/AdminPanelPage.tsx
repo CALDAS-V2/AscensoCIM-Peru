@@ -9,7 +9,8 @@ import {
   Button,
   toast
 } from '@blinkdotnew/ui'
-import { useAuth } from '../lib/hooks/useAuth'
+import { supabase } from '../lib/supabase'
+import { useAuth } from '../lib/useAuth'
 
 interface PendingUser {
   id: string
@@ -49,19 +50,13 @@ export function AdminPanelPage() {
 
   const fetchPendingUsers = async () => {
     try {
-      const token = localStorage.getItem('token')
-      const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:3001'
-      const response = await fetch(`${apiUrl}/api/auth/pending-users`, {
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json'
-        }
-      })
+      const { data, error } = await supabase
+        .from('User')
+        .select('id, email, nombres, apellidoPaterno, apellidoMaterno, cip, status, createdAt')
+        .eq('status', 'pending')
 
-      if (response.ok) {
-        const data = await response.json()
-        setPendingUsers(data.users || [])
-      }
+      if (error) throw error
+      setPendingUsers(data || [])
     } catch (error) {
       console.error('Error fetching pending users:', error)
       toast.error('Error al cargar usuarios pendientes')
@@ -72,19 +67,27 @@ export function AdminPanelPage() {
 
   const fetchActivityLogs = async () => {
     try {
-      const token = localStorage.getItem('token')
-      const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:3001'
-      const response = await fetch(`${apiUrl}/api/auth/activity-logs`, {
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json'
-        }
-      })
+      const { data, error } = await supabase
+        .from('ActivityLog')
+        .select('id, userId, action, details, createdAt')
+        .order('createdAt', { ascending: false })
+        .limit(100)
 
-      if (response.ok) {
-        const data = await response.json()
-        setActivityLogs(data.logs || [])
-      }
+      if (error) throw error
+
+      // Fetch user info for each activity log
+      const entries = data || []
+      const userIds = [...new Set(entries.map(l => l.userId))]
+      const { data: users } = await supabase
+        .from('User')
+        .select('id, email, nombres')
+        .in('id', userIds)
+
+      const userMap = Object.fromEntries((users || []).map(u => [u.id, u]))
+      setActivityLogs(entries.map(log => ({
+        ...log,
+        user: userMap[log.userId] ? { email: userMap[log.userId].email, nombres: userMap[log.userId].nombres } : undefined
+      })))
     } catch (error) {
       console.error('Error fetching activity logs:', error)
     }
@@ -93,22 +96,14 @@ export function AdminPanelPage() {
   const approveUser = async (userId: string) => {
     try {
       setApproveLoading(prev => ({ ...prev, [userId]: true }))
-      const token = localStorage.getItem('token')
-      const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:3001'
-      const response = await fetch(`${apiUrl}/api/auth/approve-user/${userId}`, {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json'
-        }
-      })
+      const { error } = await supabase
+        .from('User')
+        .update({ status: 'approved' })
+        .eq('id', userId)
 
-      if (response.ok) {
-        toast.success('Usuario aprobado correctamente')
-        fetchPendingUsers()
-      } else {
-        toast.error('Error al aprobar usuario')
-      }
+      if (error) throw error
+      toast.success('Usuario aprobado correctamente')
+      fetchPendingUsers()
     } catch (error) {
       console.error('Error approving user:', error)
       toast.error('Error al aprobar usuario')
@@ -120,22 +115,14 @@ export function AdminPanelPage() {
   const rejectUser = async (userId: string) => {
     try {
       setApproveLoading(prev => ({ ...prev, [userId]: true }))
-      const token = localStorage.getItem('token')
-      const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:3001'
-      const response = await fetch(`${apiUrl}/api/auth/reject-user/${userId}`, {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json'
-        }
-      })
+      const { error } = await supabase
+        .from('User')
+        .update({ status: 'rejected' })
+        .eq('id', userId)
 
-      if (response.ok) {
-        toast.success('Usuario rechazado')
-        fetchPendingUsers()
-      } else {
-        toast.error('Error al rechazar usuario')
-      }
+      if (error) throw error
+      toast.success('Usuario rechazado')
+      fetchPendingUsers()
     } catch (error) {
       console.error('Error rejecting user:', error)
       toast.error('Error al rechazar usuario')

@@ -20,14 +20,14 @@ import {
 import { Link, useLocation } from '@tanstack/react-router'
 import { useTheme } from '../lib/hooks/useTheme'
 import { Footer } from '../components/Footer'
+import { supabase } from '../lib/supabase'
 
 export function DashboardLayout({ children }: { children: React.ReactNode }) {
   const location = useLocation()
   const { isDark, toggleTheme } = useTheme()
   
-  const handleLogout = () => {
-  localStorage.removeItem('token')
-  localStorage.removeItem('user')
+  const handleLogout = async () => {
+  await supabase.auth.signOut()
   window.location.href = '/'
 }
 

@@ -28,7 +28,7 @@ import {
   BookOpen,
   GraduationCap
 } from 'lucide-react'
-import { useAuth } from '../lib/hooks/useAuth'
+import { useAuth } from '../lib/useAuth'
 
 export function HomePage() {
   const { user } = useAuth()

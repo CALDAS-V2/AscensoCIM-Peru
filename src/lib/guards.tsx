@@ -1,7 +1,8 @@
 import React from 'react'
-import { useAuth } from './hooks/useAuth'
+import { useAuth } from './useAuth'
+import { supabase } from './supabase'
 import { LoadingOverlay } from '@blinkdotnew/ui'
-import { LoginPage } from '../pages/LoginPage'
+import { LoginPageV2 } from '../pages/LoginPageV2'
 
 interface ProtectedRouteProps {
   children: React.ReactNode
@@ -12,18 +13,33 @@ interface ProtectedRouteProps {
  * ProtectedRoute: Verifica que el usuario esté autenticado y tenga el status requerido
  */
 export function ProtectedRoute({ children, requiredStatus = 'approved' }: ProtectedRouteProps) {
-  const { user, isLoading } = useAuth()
+  const { user, loading } = useAuth()
+  const [profile, setProfile] = React.useState<any>(null)
+  const [profileLoading, setProfileLoading] = React.useState(true)
 
-  if (isLoading) {
+  React.useEffect(() => {
+    if (!user) {
+      setProfileLoading(false)
+      return
+    }
+    supabase.from('User').select('status, lockedUntil').eq('id', user.id).maybeSingle().then(({ data }) => {
+      setProfile(data)
+      setProfileLoading(false)
+    })
+  }, [user])
+
+  if (loading || profileLoading) {
     return <LoadingOverlay loading />
   }
 
   if (!user) {
-    return <LoginPage />
+    return <LoginPageV2 />
   }
 
+  const userStatus = profile?.status
+
   // Si la ruta requiere status 'approved' pero el usuario está pending
-  if (requiredStatus === 'approved' && user.status === 'pending') {
+  if (requiredStatus === 'approved' && userStatus === 'pending') {
     return (
       <div className="flex items-center justify-center min-h-screen bg-background">
         <div className="max-w-md w-full p-8 rounded-lg border border-border bg-card">
@@ -40,7 +56,7 @@ export function ProtectedRoute({ children, requiredStatus = 'approved' }: Protec
   }
 
   // Si el usuario está suspended
-  if (user.status === 'suspended') {
+  if (userStatus === 'suspended') {
     return (
       <div className="flex items-center justify-center min-h-screen bg-background">
         <div className="max-w-md w-full p-8 rounded-lg border border-border bg-card">
@@ -57,8 +73,8 @@ export function ProtectedRoute({ children, requiredStatus = 'approved' }: Protec
   }
 
   // Si el usuario está locked por intentos fallidos
-  if (user.status === 'locked') {
-    const lockedUntil = user.lockedUntil ? new Date(user.lockedUntil).toLocaleString() : 'indefinidamente'
+  if (userStatus === 'locked') {
+    const lockedUntil = profile?.lockedUntil ? new Date(profile.lockedUntil).toLocaleString() : 'indefinidamente'
     return (
       <div className="flex items-center justify-center min-h-screen bg-background">
         <div className="max-w-md w-full p-8 rounded-lg border border-border bg-card">
@@ -85,18 +101,33 @@ interface AdminRouteProps {
 }
 
 export function AdminRoute({ children }: AdminRouteProps) {
-  const { user, isLoading } = useAuth()
+  const { user, loading } = useAuth()
+  const [isAdmin, setIsAdmin] = React.useState<boolean | null>(null)
 
-  if (isLoading) {
+  React.useEffect(() => {
+    const checkAdmin = async () => {
+      if (!user) {
+        setIsAdmin(false)
+        return
+      }
+      const { data: profile } = await supabase.from('User').select('roleId').eq('id', user.id).maybeSingle()
+      if (!profile) {
+        setIsAdmin(false)
+        return
+      }
+      const { data: role } = await supabase.from('Role').select('name').eq('id', profile.roleId).maybeSingle()
+      setIsAdmin(role?.name === 'admin')
+    }
+    checkAdmin()
+  }, [user])
+
+  if (loading || isAdmin === null) {
     return <LoadingOverlay loading />
   }
 
   if (!user) {
-    return <LoginPage />
+    return <LoginPageV2 />
   }
-
-  // Verificar si el usuario es admin
-  const isAdmin = user.role === 'admin' || user.roleId?.includes('admin')
 
   if (!isAdmin) {
     return (
@@ -124,7 +155,7 @@ interface ModuleRouteProps {
 }
 
 export function ModuleRoute({ children, moduleId, moduleName }: ModuleRouteProps) {
-  const { user, isLoading } = useAuth()
+  const { user, loading } = useAuth()
   const [hasAccess, setHasAccess] = React.useState<boolean | null>(null)
 
   React.useEffect(() => {
@@ -135,21 +166,19 @@ export function ModuleRoute({ children, moduleId, moduleName }: ModuleRouteProps
       }
 
       try {
-        const token = localStorage.getItem('authToken')
-        const response = await fetch(`http://localhost:3001/api/auth/module-access/${moduleId}`, {
-          method: 'GET',
-          headers: {
-            'Authorization': `Bearer ${token}`,
-            'Content-Type': 'application/json'
-          }
-        })
+        let modId = moduleId
+        // Look up module by slug if needed
+        const { data: mod } = await supabase.from('Module').select('id').eq('slug', moduleId).maybeSingle()
+        if (mod) modId = mod.id
 
-        if (response.ok) {
-          const data = await response.json()
-          setHasAccess(data.hasAccess === true)
-        } else {
-          setHasAccess(false)
-        }
+        const { data: permission } = await supabase
+          .from('Permission')
+          .select('canAccess')
+          .eq('userId', user.id)
+          .eq('moduleId', modId)
+          .maybeSingle()
+
+        setHasAccess(permission?.canAccess !== false)
       } catch (error) {
         console.error('Error checking module access:', error)
         setHasAccess(false)
@@ -159,12 +188,12 @@ export function ModuleRoute({ children, moduleId, moduleName }: ModuleRouteProps
     checkModuleAccess()
   }, [user, moduleId])
 
-  if (isLoading || hasAccess === null) {
+  if (loading || hasAccess === null) {
     return <LoadingOverlay loading />
   }
 
   if (!user) {
-    return <LoginPage />
+    return <LoginPageV2 />
   }
 
   if (!hasAccess) {

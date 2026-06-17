@@ -951,6 +951,51 @@ authRouter.post('/reset-password', async (req: Request, res: Response) => {
 })
 
 
+// POST /api/auth/sync-reset-password - Sincronizar contraseña actualizada en Supabase con Prisma
+authRouter.post('/sync-reset-password', async (req: Request, res: Response) => {
+  try {
+    const { newPassword, accessToken } = req.body
+
+    if (!newPassword || !accessToken) {
+      return res.status(400).json({ error: 'Contraseña y token requeridos' })
+    }
+
+    if (!supabaseAdmin) {
+      return res.status(500).json({ error: 'Supabase Admin no configurado' })
+    }
+
+    // Verificar que el accessToken sea válido en Supabase
+    const { data: { user: supabaseUser }, error: verifyError } = await supabaseAdmin.auth.getUser(accessToken)
+
+    if (verifyError || !supabaseUser?.email) {
+      return res.status(401).json({ error: 'Token de sesión inválido o expirado' })
+    }
+
+    // Buscar al usuario en la base de datos local por email
+    const prismaUser = await prisma.user.findUnique({ where: { email: supabaseUser.email } })
+    if (!prismaUser) {
+      return res.status(404).json({ error: 'Usuario no encontrado en el sistema' })
+    }
+
+    const validation = validateAuthInput('test@test.com', newPassword)
+    if (!validation.valid) {
+      return res.status(400).json({ error: validation.error })
+    }
+
+    // Actualizar la contraseña en Prisma
+    const passwordHash = await hashPassword(newPassword)
+    await prisma.user.update({
+      where: { id: prismaUser.id },
+      data: { passwordHash }
+    })
+
+    res.json({ message: 'Contraseña sincronizada correctamente' })
+  } catch (error) {
+    console.error('Error syncing password:', error)
+    res.status(500).json({ error: 'Error al sincronizar contraseña' })
+  }
+})
+
 // Endpoint de prueba: enviar WhatsApp vía Twilio (Solo Admin)
 authRouter.post('/debug/send-test-whatsapp', authMiddleware, adminOnly, async (req: Request, res: Response) => {
   try {

@@ -11,6 +11,7 @@ import {
   Button,
   toast
 } from '@blinkdotnew/ui'
+import { supabase } from '../lib/supabase'
 
 export function ForgotPasswordPage() {
   const [email, setEmail] = useState('')
@@ -20,16 +21,15 @@ export function ForgotPasswordPage() {
     e.preventDefault()
     setLoading(true)
     try {
-      const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:3001'
-      await fetch(`${apiUrl}/api/auth/forgot-password`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email: email.trim() })
+      const redirectTo = `${window.location.origin}/reset-password`
+      const { error } = await supabase.auth.resetPasswordForEmail(email.trim(), {
+        redirectTo
       })
-      toast.success('Si el correo existe, recibirás un enlace para restablecer tu contraseña')
-    } catch (err) {
-      console.error('Error requesting password reset:', err)
-      toast.error('Error al solicitar recuperación. Intenta de nuevo más tarde.')
+      if (error) throw error
+      toast.success('Revisa tu correo. Recibirás un enlace para restablecer tu contraseña.')
+    } catch (err: any) {
+      console.error('Error:', err)
+      toast.error(err?.message || 'Error al enviar el correo. Intenta de nuevo.')
     } finally {
       setLoading(false)
     }

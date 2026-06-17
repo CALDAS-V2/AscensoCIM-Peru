@@ -58,21 +58,24 @@ export function IAPage() {
         throw new Error('API key no configurada')
       }
 
-      // Llamada al backend proxy
-      const response = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:3001'}/api/ai/chat`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          apiKey,
-          systemPrompt: SYSTEM_PROMPT,
-          messages: [
-            ...messages.map(m => ({ role: m.role, content: m.content })),
-            { role: 'user', content: userMessage }
-          ]
-        })
-      })
+      // Llamada directa a Gemini API
+      const geminiMessages = messages.map(m => ({
+        role: m.role === 'assistant' ? 'model' : 'user',
+        parts: [{ text: m.content }]
+      }))
+      geminiMessages.push({ role: 'user', parts: [{ text: userMessage }] })
+
+      const response = await fetch(
+        `https://generativelanguage.googleapis.com/v1/models/gemini-pro:generateContent?key=${apiKey}`,
+        {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            systemInstruction: { parts: [{ text: SYSTEM_PROMPT }] },
+            contents: geminiMessages
+          })
+        }
+      )
 
       if (!response.ok) {
         const errorData = await response.json()
@@ -81,7 +84,7 @@ export function IAPage() {
       }
 
       const data = await response.json()
-      const assistantMessage = data.content
+      const assistantMessage = data.candidates?.[0]?.content?.parts?.[0]?.text || 'Sin respuesta'
 
       setMessages(prev => [...prev, { role: 'assistant', content: assistantMessage }])
     } catch (error) {

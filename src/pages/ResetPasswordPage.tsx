@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import { useNavigate } from '@tanstack/react-router'
 import {
   Page,
@@ -21,47 +21,52 @@ export function ResetPasswordPage() {
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [isVerifying, setIsVerifying] = useState(true)
   const [sessionExists, setSessionExists] = useState(false)
-
-  const [localToken, setLocalToken] = useState<string | null>(null)
+  const exchangedRef = useRef(false)
 
   useEffect(() => {
     const init = async () => {
       try {
-        // Verificar si la URL contiene un token interno (backend)
         const params = new URLSearchParams(window.location.search)
-        const tokenParam = params.get('token')
-        if (tokenParam) {
-          setLocalToken(tokenParam)
-          setSessionExists(true)
-          setError(null)
-          setIsVerifying(false)
-          return
-        }
+        const code = params.get('code')
+        let sessionEstablished = false
 
-        // Intentar obtener sesión desde URL (Supabase incluye token en la redirección)
-        try {
-          // @ts-ignore: algunas versiones de supabase-js exponen getSessionFromUrl
-          const maybe = (supabase.auth as any).getSessionFromUrl && await (supabase.auth as any).getSessionFromUrl()
-          if (maybe && maybe.data && maybe.data.session) {
-            setSessionExists(true)
-            setError(null)
+        // Exchange PKCE code exactly once (guards against StrictMode double-mount)
+        if (code && !exchangedRef.current) {
+          exchangedRef.current = true
+          const { error: exchangeError } = await supabase.auth.exchangeCodeForSession(code)
+          if (exchangeError) {
+            setError('El enlace de recuperación no es válido o ha expirado. Solicita uno nuevo.')
             setIsVerifying(false)
             return
           }
-        } catch (e) {
-          // no-op
         }
 
-        // Si no se obtuvo sesión desde la URL, verificar sesión actual
-        const { data } = await supabase.auth.getSession()
+        const { data, error: sessionError } = await supabase.auth.getSession()
         if (data?.session) {
+          sessionEstablished = true
+        }
+
+        // Handle implicit flow (hash fragments) as fallback
+        if (!sessionEstablished) {
+          const hash = window.location.hash
+          if (hash && hash.includes('type=recovery')) {
+            await new Promise(r => setTimeout(r, 1500))
+            const { data: d } = await supabase.auth.getSession()
+            if (d?.session) {
+              sessionEstablished = true
+            }
+          }
+        }
+
+        if (sessionEstablished) {
           setSessionExists(true)
         } else {
-          setSessionExists(false)
-          setError('Token inválido o expirado. Usa el enlace enviado por email.')
+          setError('Enlace inválido o expirado. Solicita un nuevo enlace de recuperación.')
         }
+
+        if (sessionError) throw sessionError
       } catch (err) {
-        setError('Error verificando sesión de recuperación')
+        setError('Error al verificar el enlace de recuperación')
       } finally {
         setIsVerifying(false)
       }
@@ -92,31 +97,10 @@ export function ResetPasswordPage() {
     setIsSubmitting(true)
 
     try {
-      if (localToken) {
-        // Usar endpoint del backend para restablecer contraseña con token interno
-        const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:3001'
-        const resp = await fetch(`${apiUrl}/api/auth/reset-password`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ token: localToken, newPassword, confirmPassword })
-        })
+      const { error: updateError } = await supabase.auth.updateUser({ password: newPassword })
 
-        const result = await resp.json()
-        if (!resp.ok) {
-          setError(result.error || 'Error al actualizar la contraseña')
-          return
-        }
-
-        toast.success('Contraseña actualizada correctamente')
-        setTimeout(() => { window.location.href = '/' }, 1500)
-        return
-      }
-
-      // Si no hay token local, intentar actualizar vía Supabase (enlace de Supabase)
-      const { data, error } = await supabase.auth.updateUser({ password: newPassword })
-
-      if (error) {
-        setError(error.message || 'Error al actualizar la contraseña')
+      if (updateError) {
+        setError(updateError.message || 'Error al actualizar la contraseña')
         return
       }
 
